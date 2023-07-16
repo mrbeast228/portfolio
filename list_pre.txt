@@ -18,5 +18,5 @@
 # мигратор Elasticsearch -> Opensearch
 # добавлялка новых разрешений в X.Org (xrandr + cvt)
 # читалка билетов OCR + GPT (3.5)
-- Zabbix triiger de-LLDer (клонируем lld триггеры чтобы их можно было редачить)
+# Zabbix triiger de-LLDer (клонируем lld триггеры чтобы их можно было редачить)
 - dfb2 (пиналка фреймбуффера - найти исходники!)

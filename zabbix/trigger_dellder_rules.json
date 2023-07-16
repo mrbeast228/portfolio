@@ -1,0 +1,34 @@
+{
+	"trigger_a": {
+		"host_group_selector": {
+			"type": "regexp",
+			"expression": "..*"
+		},
+		"host_name_selector": {
+			"type": "regexp",
+			"expression": ".*"
+		},
+		"trigger_selector": {
+			"type": "regexp",
+			"expression": ".*"
+		},
+		"trigger_match_groups": [A, B, C]
+	},
+	"trigger_b": {
+		"host_group_selector": {
+			"type": "regexp",
+			"expression": ".*"
+		},
+		"host_name_selector": {
+			"type": "regexp",
+			"expression": ".*"
+		},
+		"trigger_selector": {
+			"type": "regexp",
+			"expression": ".*"
+		},
+		"trigger_match_groups": [D, E, F]
+	},
+  "match_group_order_sensitive": true,
+  "match_group_case_sensitive": false
+}
