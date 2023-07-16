@@ -1,0 +1,10 @@
+[
+  {
+    "handler_type": "Text",
+    "type": ["command"],
+    "key": [["selen"]],
+    "answer": "Данные изменены",
+    "case_ignore": true,
+    "custom_filter": "patchSelenData"
+  }
+]

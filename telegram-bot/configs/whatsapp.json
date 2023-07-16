@@ -1,0 +1,26 @@
+[
+  {
+    "handler_type": "Text",
+    "type": ["command"],
+    "key": [["share"]],
+    "answer": "Разослано успешно",
+    "case_ignore": true,
+    "custom_filter": "shareToWhatsApp"
+  },
+  {
+    "handler_type": "Text",
+    "type": ["command"],
+    "key": [["add"]],
+    "answer": "Группа добавлена",
+    "case_ignore": true,
+    "custom_filter": "addNewGroup"
+  },
+  {
+    "handler_type": "Text",
+    "type": ["command"],
+    "key": [["remove"]],
+    "answer": "Группа удалена",
+    "case_ignore": true,
+    "custom_filter": "deleteGroup"
+  }
+]

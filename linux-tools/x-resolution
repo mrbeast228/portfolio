@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+if [ "$2" = "" ]; then
+    echo "Add new resolution for your display using CVT and XRandr"
+    echo
+    echo "Usage: x-resolution WIDTH HEIGHT [OUTPUT]"
+    exit 1
+fi
+
+OUTPUT=eDP-1
+if [ "$3" != "" ] && [ "`xrandr | grep \"$3 connected\"`" != "" ]; then
+    OUTPUT=$3
+fi
+
+NEWMODE=$(sudo cvt $1 $2 | tail -n 1 | sed 's/Modeline //g')
+xrandr --newmode $NEWMODE
+xrandr --addmode $OUTPUT $(echo $NEWMODE | awk '{print $1}')
