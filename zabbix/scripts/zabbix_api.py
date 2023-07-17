@@ -8,7 +8,7 @@ class Exporter:
 		# parse data from command line
 		parser = ArgumentParser()
 
-		parser.add_argument('-c', '--config', default='config.json', required=False) # config.json must have hostname, username, password and default header
+		parser.add_argument('-c', '--config', default='zabbix_api_config.json', required=False) # config.json must have hostname, username, password and default header
 		parser.add_argument('-t', '--template', default='', required=True) # zabbix template name
 		parser.add_argument('--items') # filename for saving exported items from template
 		parser.add_argument('--triggers') # filename for saving exported triggers from template

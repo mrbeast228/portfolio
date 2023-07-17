@@ -1,23 +1,29 @@
 from sys import argv
 import init
 from aiogram import executor
-import stat_funcs
-from modules import *
+import json
+from aiogram import types
+from aiogram.utils.markdown import *
+import json
 
-# create stat_funcs
-try:
-    stat_funcs.sharer = whatsapp.Sharer('http://127.0.0.1:3000')
-except:
-    pass
+# prepare for descripion
+init.format_mode = "HTML"
+
+def genHandlers(config):
+	handlersFile = open(config, 'r')
+	hans = json.load(handlersFile)
+	handlersFile.close()
+	return hans
 
 # create bot
-init.dp, init.BOT = init.createDP(argv[1])
+cfg = json.load(open('config.json', 'r'))
+init.dp, init.BOT = init.createDP(cfg['token'])
 
-# import handlers and description only after creating a bot!
-import handlers, description
+# import handlers only after creating a bot!
+import handlers
 
 # create handlers
-hans = description.genHandlers(argv[2])
+hans = genHandlers(cfg['config'])
 
 for handler in hans:
     func = getattr(handlers, "Add" + handler.pop('handler_type') + "Handler")

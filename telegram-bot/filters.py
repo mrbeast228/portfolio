@@ -16,7 +16,7 @@ def GenAnswer(ans):
         ans1 = random.choice(ans)
         if isinstance(ans1, str):
             return emojize(ans1)
-    return "Разработчик этого бота - долбаеб, который опять проебался в типах\n"
+    return "Разработчик этого бота обладает IQ как у хлебушка и опять профукал все типы\n"
 
 def SetTextFilter(type, key, case_ignore):
     global filter_types

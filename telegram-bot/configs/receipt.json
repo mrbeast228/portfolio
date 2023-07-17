@@ -1,0 +1,10 @@
+[
+  {
+    "handler_type": "Text",
+    "type": [],
+    "key": [],
+    "answer": "",
+    "case_ignore": true,
+    "custom_filter": "receipt.processReceipt"
+  }
+]

@@ -1,75 +1,11 @@
-# WARNING: this isn't independent module, it must be used only from bot!
-import json
-from time import sleep
-from os import system
+# This file only imports all files from 'modules' directory
+# to make them visible from another functions and applies
+# nest_asyncio patch to allow run asynchronous bot methods
+# from our synchronous modules
+from modules import *
+import asyncio
+import nest_asyncio
 
-def shareToWhatsApp(msg, bot, **kwargs):
-	msgLines = msg.text.splitlines()
-	command = msgLines.pop(0)
-	city = msgLines.pop(0).replace('ё', 'е')
-
-	citiesGroupsFile = open('configs/groups.json', 'r')
-	citiesGroups = json.load(citiesGroupsFile)
-	resultMsg = '\n'.join(msgLines)
-	citiesGroupsFile.close()
-
-	if city not in citiesGroups:
-		return False
-
-	for group in citiesGroups[city]:
-		print(group)
-		sharer.sendToGroup(group, resultMsg)
-		sleep(0.5)
-	return True
-
-def addNewGroup(msg, bot, **kwargs):
-	jsonFileRead = open('configs/groups.json', 'r')
-	groups = json.load(jsonFileRead)
-	jsonFileRead.close()
-
-	msgLines = msg.text.splitlines()
-	command = msgLines.pop(0)
-	city = msgLines.pop(0).replace('ё', 'е')
-	group = msgLines.pop(0)
-
-	if city not in groups:
-		groups[city] = []
-	if group not in groups[city]:
-		groups[city].append(group)
-
-	jsonFileWrite = open('configs/groups.json', 'w')
-	json.dump(groups, jsonFileWrite)
-	jsonFileWrite.close()
-	return True
-
-def deleteGroup(msg, bot, **kwargs):
-	jsonFileRead = open('configs/groups.json', 'r')
-	groups = json.load(jsonFileRead)
-	jsonFileRead.close()
-
-	msgLines = msg.text.splitlines()
-	command = msgLines.pop(0)
-	group = msgLines.pop(0)
-
-	for city in groups:
-		if group in groups[city]:
-			groups[city].remove(group)
-			break
-
-	jsonFileWrite = open('configs/groups.json', 'w')
-	json.dump(groups, jsonFileWrite)
-	jsonFileWrite.close()
-	return True
-
-def patchSelenData(msg, bot, **kwargs):
-	selenDataFile = open('.buller-data', 'w')
-
-	msgLines = msg.text.splitlines()
-	command = msgLines.pop(0)
-
-	selenData = '\n'.join(msgLines)
-	selenDataFile.write(selenData)
-	selenDataFile.close()
-
-	system('restarter')
-	return True
+nest_asyncio.apply()
+def awaiter(task):
+    return asyncio.get_event_loop().run_until_complete(task)

@@ -5,7 +5,7 @@
     "key": [["share"]],
     "answer": "Разослано успешно",
     "case_ignore": true,
-    "custom_filter": "shareToWhatsApp"
+    "custom_filter": "whatsapp.shareToWhatsApp"
   },
   {
     "handler_type": "Text",
@@ -13,7 +13,7 @@
     "key": [["add"]],
     "answer": "Группа добавлена",
     "case_ignore": true,
-    "custom_filter": "addNewGroup"
+    "custom_filter": "whatsapp.addNewGroup"
   },
   {
     "handler_type": "Text",
@@ -21,6 +21,6 @@
     "key": [["remove"]],
     "answer": "Группа удалена",
     "case_ignore": true,
-    "custom_filter": "deleteGroup"
+    "custom_filter": "whatsapp.deleteGroup"
   }
 ]

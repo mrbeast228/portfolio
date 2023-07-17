@@ -1,4 +1,4 @@
-import logging, description
+import logging
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
@@ -9,7 +9,7 @@ def createDP(token):
 	logging.basicConfig(level=logging.INFO)
 
 	# Initialize bot and dispatcher
-	BOT = Bot(token=token, parse_mode=getattr(ParseMode, description.format_mode))
+	BOT = Bot(token=token, parse_mode=getattr(ParseMode, globals()['format_mode']))
 	dp = Dispatcher(BOT, storage=MemoryStorage())
 	dp.middleware.setup(LoggingMiddleware())
 	return dp, BOT
