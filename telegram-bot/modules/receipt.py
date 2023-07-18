@@ -15,30 +15,44 @@ from google_api import GoogleAPI
 def awaiter(task):
 	return asyncio.get_event_loop().run_until_complete(task)
 
-def processFile(filePath, fileId, sheets):
+def gptProcessor(receiptRaw):
+	pass # TODO()
+
+def processFile(filePath, fileId, sheets, useGPT=False):
 	# convert receipt to text
 	convert_from_path(filePath)[0].save(filePath + '.jpg', 'JPEG')
 	receiptRaw = str(pytesseract.image_to_string(Image.open(filePath + '.jpg'), config=config))
+	if useGPT:
+		return gptProcessor(receiptRaw)
+
 	receiptList = [s for s in receiptRaw.splitlines() if s]
 	NSPK = 'сбп' in receiptRaw.lower()
 	rec = 'чек' in receiptRaw.lower()
 	os.remove(filePath + '.jpg')
 
 	# convert text from receipt to formalized list
+	months = ["мск", "января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"]
 	result = {'id': fileId, 'date': receiptList[2], 'type': ' ', 'receiverFio': ' ', 'receiverNumber': ' ', 'bank': 'Сбербанк' if not NSPK and rec else ' ', 'senderFio': ' ', 'senderNumber': ' ', 'amount': ' ', 'fee': ' ', 'auth': ' ', 'nspk': ' ', 'document': ' '}
 	for i in range(len(receiptList) - 1):
 		cW = receiptList[i].lower()
+
+		for m in months: # detect dates
+			if m in cW:
+				result['date'] = receiptList[i]
+				break
+
 		if 'страна' in cW or 'перевод отправлен' in cW or 'деньги' in cW: # skip not necessary data
 			continue
-		elif 'мск' in cW:
-			result['date'] = receiptList[i]
+
 		elif 'перевод по' in cW or 'перевод клиенту' in cW:
 			result['type'] = receiptList[i]
+
 		elif 'отправ' in cW:
 			if 'карт' in cW or 'номер' in cW or 'счёт' in cW or 'счет' in cW:
 				result['senderNumber'] = '****' + receiptList[i+1][-4:]
 			else:
 				result['senderFio'] = receiptList[i+1]
+
 		elif 'получате' in cW:
 			if 'банк' in cW:
 				result['bank'] = receiptList[i+1]
@@ -46,17 +60,22 @@ def processFile(filePath, fileId, sheets):
 				result['receiverFio'] = receiptList[i+1]
 			elif 'карт' in cW or 'номер' in cW or 'счёт' in cW or 'счет' in cW:
 				result['receiverNumber'] = receiptList[i+1] if NSPK else '****' + receiptList[i+1][-4:]
+
 		elif 'сумма' in cW:
 			result['amount'] = receiptList[i+1]
+
 		elif 'комиссия' in cW:
 			result['fee'] = receiptList[i+1]
+
 		elif 'номер' in cW:
 			if 'документ' in cW:
 				result['document'] = receiptList[i+1]
 			elif 'операции' in cW:
 				result['nspk'] = receiptList[i+1]
+
 		elif 'авторизаци' in cW:
 			result['auth'] = receiptList[i+1]
+
 	sheets.appendRows([[result[key] for key in result]])
 
 def processReceipt(msg, bot, **kwargs):
