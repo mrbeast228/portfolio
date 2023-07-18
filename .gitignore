@@ -2,4 +2,3 @@
 **/*.log
 telegram-bot/config.json
 google-wb/*.json
-!google-wb/google_config.json

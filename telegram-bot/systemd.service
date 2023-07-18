@@ -1,0 +1,15 @@
+[Unit]
+Description=Telegram Bot in USERNAME
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RuntimeMaxSec=15m
+ExecStart=/usr/bin/python3 bot.py
+WorkingDirectory=/home/USERNAME/projects-database/telegram-bot
+User=USERNAME
+Group=USERNAME
+
+[Install]
+WantedBy=multi-user.target

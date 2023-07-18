@@ -1,6 +1,7 @@
 список проектов которые надо сюда загрузить:
-# бот телеграмм (на базе, медиа потеряли, плюс модуль вацапа)
-# Google Spreadsheets + Wildberries API интеграция
+# бот телеграмм (интеграции Whatsapp и Google Sheets)
+# Google Spreadsheets API (pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib)
+# Wildberries API (интеграция c гуглом)
 # мобильный прокси (gigaloop)
 # генератор активности
 # описывалка chatGPT (v2)
