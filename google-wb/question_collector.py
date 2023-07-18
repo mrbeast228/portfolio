@@ -1,30 +1,25 @@
 import os.path
 from google_api import GoogleAPI
 import requests
-from string import ascii_uppercase as alphabet
 from argparse import ArgumentParser
 
 class WBApi:
 	sheets = None
 	tokens = None
 	baseWB = 'https://feedbacks-api.wildberries.ru'
-	currentSheet = None
 	allowedArticles = None
 
-	def __init__(self, WBTokens, spreadId, serviceFile):
-		self.sheets = GoogleAPI(spreadId, serviceFile)
+	def __init__(self, WBTokens):
+		self.sheets = GoogleAPI()
 		self.tokens = [{'Authorization': WBToken} for WBToken in WBTokens]
-
-	def bufferizeSheet(self, sheetName):
-		self.currentSheet = self.sheets.read(sheetName, 'A1:I10000')
 
 	def alreadyQuestioned(self, sheetName):
 		self.bufferizeSheet(sheetName) # synchronize
 		result = []
 
-		for rowNum in range(1, len(self.currentSheet)):
-			if len(self.currentSheet[rowNum]) > 1:
-				result.append(self.currentSheet[rowNum][1])
+		for rowNum in range(1, len(self.sheets.currentSheet)):
+			if len(self.sheets.currentSheet[rowNum]) > 1:
+				result.append(self.sheets.currentSheet[rowNum][1])
 		return result
 
 	def uploadToSheet(self, sheetName, responseType, isAnswered):
@@ -63,7 +58,7 @@ class WBApi:
 					else:
 						row.extend([' ', 'Нет'])
 					result.append(row)
-		self.sheets.appendRows(sheetName, result)
+		self.sheets.appendRows(result, sheetName)
 
 	def sendAnswer(self, responseId, token, answer, responseType):
 		answerData = {
@@ -82,23 +77,21 @@ class WBApi:
 
 	def uploadAllAnswers(self, sheetName, responseType):
 		self.bufferizeSheet(sheetName)
-		uRC = len(self.currentSheet)
+		uRC = len(self.sheets.currentSheet)
 		for i in range(uRC):
-			if self.currentSheet[i][7].lower() == 'да':
-				self.sendAnswer(self.currentSheet[i][1], self.tokens[int(self.currentSheet[i][0])], self.currentSheet[i][6], responseType)
-				self.sheets.removeRow(sheetName, i + 1)
+			if self.sheets.currentSheet[i][7].lower() == 'да':
+				self.sendAnswer(self.sheets.currentSheet[i][1], self.tokens[int(self.sheets.currentSheet[i][0])], self.sheets.currentSheet[i][6], responseType)
+				self.sheets.removeRow(i+1, sheetName)
 
 def main():
 	parser = ArgumentParser()
 
 	parser.add_argument('--wb-token-file', required=True)
-	parser.add_argument('--spreadsheet-id', required=True)
-	parser.add_argument('--google-token-file', required=True)
 	args = parser.parse_args()
 
 	tokenList = open(args.wb_token_file, 'r').read().split('\n')
 	tokenList.pop()
-	wb = WBApi(tokenList, args.spreadsheet_id, args.google_token_file)
+	wb = WBApi(tokenList)
 	wb.getArticlesList()
 
 	wb.uploadAllAnswers('Вопросы новые', 'questions')
