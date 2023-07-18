@@ -30,6 +30,8 @@ def processFile(filePath, fileId, sheets):
 		cW = receiptList[i].lower()
 		if 'страна' in cW or 'перевод отправлен' in cW or 'деньги' in cW: # skip not necessary data
 			continue
+		elif 'мск' in cW:
+			result['date'] = receiptList[i]
 		elif 'перевод по' in cW or 'перевод клиенту' in cW:
 			result['type'] = receiptList[i]
 		elif 'отправ' in cW:
