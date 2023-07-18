@@ -1,5 +1,4 @@
 import os
-import wonderwords
 import asyncio
 import tempfile
 import time
