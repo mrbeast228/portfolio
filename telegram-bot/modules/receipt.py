@@ -83,18 +83,23 @@ def processReceipt(msg, bot, **kwargs):
 	sheets.bufferizeSheet()
 	if 'document' in msg:
 		document = awaiter(bot.get_file(msg.document.file_id))
-		if document.file_path.endswith('.pdf'):
+		try:
 			filePath = os.path.join(tempfile.gettempdir(), document.file_id)
 			awaiter(bot.download_file(document.file_path, filePath))
 			processFile(filePath, document.file_id, sheets)
 			os.remove(filePath)
 			return f"Чек {document.file_id} обработан"
-		return "Это не чек"
+		except Exception:
+			return "Ошибка обработки: возможно, это не чек"
 	elif 'reply_to_message' in msg:
-		if 'document' in msg.reply_to_message and msg.text.isnumeric():
-			filterRow = filter(lambda row: row[0] == msg.reply_to_message.document.file_id, sheets.currentSheet)
-			numOfRow = sheets.currentSheet.index(list(filterRow)[0])+1
-			sheets.write(f'N{numOfRow}:N{numOfRow}', [[msg.text]])
+		if True:
+			filterRow = list(filter(lambda row: row[0] == msg.reply_to_message.document.file_id, sheets.currentSheet))
+			if len(filterRow[0]) == 14:
+				toWrite = filterRow[0][-1] + ';' + msg.text
+			else:
+				toWrite = msg.text
+			numOfRow = sheets.currentSheet.index(filterRow[0])+1
+			sheets.write(f'N{numOfRow}:N{numOfRow}', [[toWrite]])
 			return f"Сделка {msg.text} привязана к документу {msg.reply_to_message.document.file_id}"
 		return "Это не сделка"
 	return "Отправляйте мне только чеки и сделки"
