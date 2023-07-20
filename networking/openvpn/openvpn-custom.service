@@ -1,0 +1,13 @@
+[Unit]
+Description=OpenVPN custom server
+After=network.target
+
+[Service]
+Type=forking
+Restart=always
+ExecStart=/bin/sh /home/USERNAME/openvpn/vpn.sh # user home directory must have 0700 mode!
+PIDFile=/run/openvpn.pid
+
+[Install]
+WantedBy=multi-user.target
+
