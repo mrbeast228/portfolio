@@ -38,7 +38,7 @@ def processFile(filePath, fileId, sheets, useGPT=False):
 
 		for m in months: # detect dates
 			if m in cW:
-				result['date'] = receiptList[i]
+				result['date'] = ' '.join(receiptList[i].split(' ')[0:4])
 				break
 
 		if 'страна' in cW or 'перевод отправлен' in cW or 'деньги' in cW: # skip not necessary data
@@ -59,13 +59,13 @@ def processFile(filePath, fileId, sheets, useGPT=False):
 			elif 'фио' in cW:
 				result['receiverFio'] = receiptList[i+1]
 			elif 'карт' in cW or 'номер' in cW or 'счёт' in cW or 'счет' in cW:
-				result['receiverNumber'] = receiptList[i+1] if NSPK else '****' + receiptList[i+1][-4:]
+				result['receiverNumber'] = "'" + receiptList[i+1] if NSPK else '****' + receiptList[i+1][-4:]
 
 		elif 'сумма' in cW:
-			result['amount'] = receiptList[i+1]
+			result['amount'] = receiptList[i+1].split('Р')[0].replace(' ', '').replace('.', ',')
 
 		elif 'комиссия' in cW:
-			result['fee'] = receiptList[i+1]
+			result['fee'] = receiptList[i+1].split('Р')[0].replace(' ', '').replace('.', ',')
 
 		elif 'номер' in cW:
 			if 'документ' in cW:
@@ -76,7 +76,7 @@ def processFile(filePath, fileId, sheets, useGPT=False):
 		elif 'авторизаци' in cW:
 			result['auth'] = receiptList[i+1]
 
-	sheets.appendRows([[result[key] for key in result]])
+	sheets.appendRows([[result[key] for key in result]], inputMethod="USER_ENTERED")
 
 def processReceipt(msg, bot, **kwargs):
 	sheets = GoogleAPI()
