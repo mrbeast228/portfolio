@@ -1,0 +1,9 @@
+[submodule "educational/pml30-repo"]
+	path = educational/pml30-repo
+	url = https://github.com/spbupos/pml30-repo.git
+[submodule "educational/snake-spbupos"]
+	path = educational/snake-spbupos
+	url = https://github.com/summer-school-2022/snake-spbupos.git
+[submodule "educational/sudoku-solver"]
+	path = educational/sudoku-solver
+	url = https://github.com/spbupos/sudoku-solver.git
