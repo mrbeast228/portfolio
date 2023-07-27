@@ -4,3 +4,4 @@ telegram-bot/config.json
 google-wb/*.json
 **/*.o
 **/.idea/
+gpg.key
