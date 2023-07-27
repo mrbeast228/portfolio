@@ -69,10 +69,15 @@ void Parser( QUEUE *QRes, QUEUE *Q )
         Push(&Stack2, T);
       else
         if (!Pop(&Stack2, NULL))
-          Error("Missing '('");
+        {
+            Error("Missing '('");
+            break;
+        }
     }
-    else
-      Error("Syntax error");
+    else {
+        Error("Syntax error");
+        break;
+    }
 
   DropOpers(')');
   if (Stack2.Top != NULL)

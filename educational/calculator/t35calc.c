@@ -1,9 +1,8 @@
 #include <stdio.h>
-#include <setjmp.h>
 #include <stdarg.h>
 #include "calc.h"
 
-jmp_buf ExprJumpBuf;
+int success = 1;
 
 void Error( char *Str, ... )
 {
@@ -14,7 +13,8 @@ void Error( char *Str, ... )
   vprintf(Str, ap);
   va_end(ap);
   printf("\n");
-  longjmp(ExprJumpBuf, 1);
+
+  success = 0;
 }
 
 void GetStr( char *str, int max )
@@ -34,29 +34,18 @@ void main( void )
   char Str[MAX];
   QUEUE Q = {NULL}, QRes = {NULL};
 
-  SetDbgMemHooks();
+  while (success) {
+      ClearQueue(&Q);
+      ClearQueue(&QRes);
+      ClearStack(&StackEval);
+      ClearVars();
 
-  if (setjmp(ExprJumpBuf))
-  {
-    ClearQueue(&Q);
-    ClearQueue(&QRes);
-    ClearStack(&StackEval);
-    ClearVars();
-    getchar();
-    return;
+      printf("Expression: ");
+      GetStr(Str, MAX);
+      Scanner(&Q, Str);
+      Parser(&QRes, &Q);
+      printf("Result: %f\n", Eval(&QRes));
+      printf("\nPress ENTER to continue or Ctrl-C to exit...");
+      getchar();
   }
-
-  printf("Expression: ");
-  GetStr(Str, MAX);
-  Scanner(&Q, Str);
-  printf("Scanned queue:\n");
-  DisplayQueue(&Q);
-  Parser(&QRes, &Q);
-  printf("Parsed queue:\n");
-  DisplayQueue(&QRes);
-  printf("Result: %f\n", Eval(&QRes));
-  printf("Variables: ");
-  DisplayVars();
-
-  longjmp(ExprJumpBuf, 1);
 }

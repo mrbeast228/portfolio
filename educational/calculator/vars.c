@@ -43,7 +43,7 @@ void PutTree( VARTREE *T )
 {
   if (T != NULL)
   {
-    printf("%s = %f,", T->Name, T->Value);
+    printf("%s = %f, ", T->Name, T->Value);
     PutTree(T->Less);
     PutTree(T->More);
   }
@@ -63,6 +63,9 @@ void ClearTree( VARTREE **T )
 void DisplayVars( void )
 {
   PutTree(Vars);
+  if (Vars != NULL)
+    printf("\b\b ");
+  printf("\n");
 }
 
 void ClearVars( void )

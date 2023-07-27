@@ -57,7 +57,9 @@ void Scanner( QUEUE *Q, char *Str )
       T.Name[i] = 0;
       Put(Q, T);
     }
-    else
-      Error("Unrecognized character '%c'", *Str);
+    else {
+        Error("Unrecognized character '%c'", *Str);
+        break;
+    }
   }
 }
