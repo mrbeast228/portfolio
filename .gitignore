@@ -2,3 +2,5 @@
 **/*.log
 telegram-bot/config.json
 google-wb/*.json
+**/*.o
+**/.idea/
