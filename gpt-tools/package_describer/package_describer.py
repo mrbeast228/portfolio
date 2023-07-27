@@ -12,6 +12,7 @@ from wheel_inspect import inspect_wheel
 openai.api_key = 'OPENAI GPT TOKEN HERE'
 cache_dir_path = "RELATIVE PATH TO PACKAGES FOLDER"
 path_to_append = 'Кеши для сборки/БЛА БЛА БЛА/' # with ending slash!!!
+pkgType = 'CLASS PER TYPE - ON OF CLASSES NAME'
 
 def find_contains(pattern, path, typ='files'):
 	result = []
@@ -136,7 +137,6 @@ class pip:
 		return [path_to_append + pkgFile, rawName[1], rawName[0], inspect_wheel(pkgFile)['dist_info']['metadata']['summary'], parse_from_gpt(rawName[0], 'pip')]
 
 if __name__ == '__main__':
-	pkgType = 'CLASS PER TYPE - ON OF CLASSES NAME'
 	if not pkgType in globals():
 		raise Exception(f"Тип пакетов {pkgType} не поддерживается!")
 	describerClass = globals()[pkgType]()
