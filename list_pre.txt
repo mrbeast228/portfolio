@@ -1,23 +1,23 @@
 список проектов которые надо сюда загрузить:
-# бот телеграмм (интеграции Whatsapp и Google Sheets, добавить кнопки)
-+ Google Spreadsheets API (pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib)
-+ Wildberries API (интеграция c гуглом)
+@ бот телеграмм (интеграции Whatsapp и Google Sheets, добавить кнопки)
++ Google Spreadsheets API
++ Wildberries API
 # мобильный прокси (gigaloop)
 # генератор активности (через прокси)
 + описывалка chatGPT
-+ zipkin etl (копировальня из кассандры в postgres)
++ zipkin etl
 # zabbix templates extractor
-@ корпоративный VPN с авторизацией (deprecated)
+@ корпоративный VPN с авторизацией (добавить ключи и БД)
 # заббикс шаблон для Juniper OSPF (только на соседей)
 # рекурсивный bsign подписыватель (через tar xattrs)
-+ змейка Kotlin (МКН)
-+ линк на все школьные проекты (репозиторий зоки)
-+ сайт на PHP с БДшкой (школа)
-+ калькулятор C++ (школа)
-+ решалка судоку на питоне (добавить MT из описывателя)
-+ мигратор Elasticsearch -> Opensearch (Reindex API, без дата стримов)
-+ добавлялка новых разрешений в X.Org (xrandr + cvt)
-+ читалка билетов OCR + GPT (3.5, добавить анализатор чеков)
++ змейка Kotlin
++ линк на все школьные проекты
++ сайт на PHP с БДшкой
++ калькулятор C++
++ решалка судоку на питоне
++ мигратор Elasticsearch -> Opensearch
++ добавлялка новых разрешений в X.Org
++ читалка билетов OCR + GPT
 # Zabbix triiger de-LLDer (клонируем lld триггеры чтобы их можно было редачить)
-+ dfb2 (пиналка фреймбуффера)
-+ деплоер кластера Kubernetes (все дистрибутивы Linux)
++ framebuffer updater
++ деплоер кластера Kubernetes
