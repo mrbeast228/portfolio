@@ -10,6 +10,6 @@ The list will be updated...
 
 ## Usage
 ```
-$ psql -U ZABBIX_USER_NAME ZABBIX_DB_NAME -W -f project-database/zabbix/sql/REQUEST.sql
+$ psql -U ZABBIX_USER_NAME ZABBIX_DB_NAME -W -f projects-database/zabbix/sql/REQUEST.sql
 <type password>
 ```

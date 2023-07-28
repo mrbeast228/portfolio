@@ -2,8 +2,8 @@
 @ бот телеграмм (интеграции Whatsapp и Google Sheets, добавить кнопки)
 + Google Spreadsheets API
 + Wildberries API
-# мобильный прокси (gigaloop)
-# генератор активности (через прокси)
++ мобильный прокси (gigaloop)
++ генератор активности (через прокси)
 + описывалка chatGPT
 + zipkin etl
 # zabbix templates extractor
@@ -12,7 +12,7 @@
 + рекурсивный bsign подписыватель
 + змейка Kotlin
 + линк на все школьные проекты
-+ сайт на PHP с БДшкой
+@ сайт на PHP с БДшкой
 + калькулятор C++
 + решалка судоку на питоне
 + мигратор Elasticsearch -> Opensearch
