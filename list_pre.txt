@@ -21,3 +21,4 @@
 # Zabbix triiger de-LLDer (клонируем lld триггеры чтобы их можно было редачить)
 + framebuffer updater
 + деплоер кластера Kubernetes
++ Zabbix SQL requests
