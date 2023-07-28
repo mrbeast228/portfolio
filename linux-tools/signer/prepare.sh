@@ -28,5 +28,6 @@ chmod 0755 /home/signer/sign.sh
 
 # add public key to digsig keys
 cp /home/signer/keys/pub.key /etc/digsig/xattr_keys/
+cp /home/signer/keys/pub.key /etc/digsig/keys/
 
 exit 0
