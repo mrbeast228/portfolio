@@ -15,7 +15,7 @@ class Cell:
     x = -1
     y = -1
     long = 'Empty'
-    short = '.'
+    short = 'E'
 
     # init cell
     def __init__(self, *args):
@@ -26,6 +26,8 @@ class Cell:
                 self.move(args[0][0], args[0][1])
             elif type(args[0]) is str:
                 self.__init__(Cell.classicCoords(args[0]))
+            elif hasattr(args[0], '__class__') and issubclass(args[0].__class__, Cell):
+                self.move(args[0].x, args[0].y)
             else:
                 raise ChessBackendException("Invalid position")
         elif largs == 2:
@@ -105,20 +107,28 @@ class Piece(Cell):
     def listMoves(self):
         self.moves = {'movements': [], 'attacks': []}
 
+    # en passant remover, will work only for pawns
+    def enPassant(self, backupPos):
+        pass
+
     # basic function for any piece to move itself (or check movement availability)
     def changePos(self, x, y, dryRun=False):
-        self.backend.backupBoard()
         cell = Cell(x, y)
+        backupPiece = self.backend.whoOccupies(cell)
+        backupPos = [self.x, self.y]
 
         if not self.backend.gameState and self.backend.currentMove == self.color and cell.envalidPos() and cell in self.moves['movements'] + self.moves['attacks']:
             if cell in self.moves['attacks']:
                 self.backend.removePiece(cell)
             self.move(x, y)
+            # check for en passant (for pawns)
+            self.enPassant(backupPos)
 
             # check is movement available from point of view of the rules of checkmates
-            self.backend.overrunBoard()
+            self.backend.generateBoard()
             if self.backend.isCheck():
-                self.backend.restoreBoard()
+                self.backend.addPiece(backupPiece)
+                self.move(backupPos[0], backupPos[1])
                 return False
 
             # if dry run, roll back the board
@@ -127,8 +137,8 @@ class Piece(Cell):
             else:
                 self.backend.currentMove *= -1
                 self.countOfMoves += 1
+                self.backend.previousActing = self
             return True
-        self.backend.restoreBoard()
         return False
 
     # for classic coords
@@ -138,6 +148,8 @@ class Piece(Cell):
             return self.changePos(pos[0], pos[1])
         elif type(coords) is list:
             return self.changePos(coords[0], coords[1])
+        elif hasattr(coords, '__class__') and issubclass(coords.__class__, Cell):
+            return self.changePos(coords.x, coords.y)
         raise ChessBackendException('Invalid action!')
 
     # create text-description for debug & API "rendering"

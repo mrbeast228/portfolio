@@ -12,9 +12,6 @@ class Backend:
     # current board in 2-dimensional list
     currentBoard = []
 
-    # backup board for moves availability checking
-    reservedBoard = None
-
     # whose move
     currentMove = 1
 
@@ -27,6 +24,9 @@ class Backend:
 
     # which piece need to be transformed
     toTransform = None
+
+    # which piece was previous acting (needed for pawns)
+    previousActing = None
 
     # create basic location of pieces
     def __init__(self):
@@ -101,13 +101,6 @@ class Backend:
         return checking
 
     # checkmates mechanics
-    def backupBoard(self):
-        self.reservedBoard = copy.deepcopy(self.currentBoard)
-
-    def restoreBoard(self):
-        self.currentBoard = copy.deepcopy(self.reservedBoard)
-        self.reservedBoard = None
-
     # find a king by color
     def findKing(self, color):
         return [piece for piece in self.pieces if piece.__class__ == King and piece.color == color][0]

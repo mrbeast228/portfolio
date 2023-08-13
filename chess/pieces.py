@@ -7,6 +7,10 @@ class Pawn(Piece):
         self.long = 'Pawn'
         self.short = 'P'
 
+    def enPassant(self, backupPos):
+        if self.__class__ == Pawn and self.x != backupPos[0]:
+            self.backend.removePiece(Cell(self.x, backupPos[1]))
+
     def listMoves(self):
         movements = []
         attacks = []
@@ -28,6 +32,12 @@ class Pawn(Piece):
             if c.envalidPos() and self.isEnemy(self.backend.whoOccupies(c)):
                 attacks.append(c)
 
+        # check for en passant
+        for direction in [-1, 1]:
+            check = self.backend.whoOccupies(Cell(self.x + direction, self.y))
+            if check.envalidPos() and check and check.__class__ == Pawn and self.backend.previousActing == check and check.countOfMoves == 1 and check.color == -self.color:
+                attacks.append(Cell(self.x + direction, self.y + self.color))
+
         self.moves = {'movements': movements, 'attacks': attacks}
 
 class Knight(Piece):
@@ -45,7 +55,7 @@ class Knight(Piece):
             for y in [-1, 1]:
                 for orient in [-1, 1]:
                     cell = self + Cell([x, 2 * y][::orient])
-                    if not self.backend.whoOccupies(cell):
+                    if cell.envalidPos() and not self.backend.whoOccupies(cell):
                         movements.append(cell)
                     elif self.isEnemy(self.backend.whoOccupies(cell)):
                         attacks.append(cell)
