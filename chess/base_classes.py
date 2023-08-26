@@ -12,13 +12,15 @@ class ChessBackendException(Exception):
 
 # base class of cell
 class Cell:
-    x = -1
-    y = -1
-    long = 'Empty'
-    short = 'E'
-
-    # init cell
     def __init__(self, *args):
+        # init variables
+        self.x = -1
+        self.y = -1
+        self.color = 0
+        self.long = 'Empty'
+        self.short = 'E'
+
+        # setup cell
         largs = len(args)
 
         if largs == 1:
@@ -76,13 +78,13 @@ class Cell:
 
 # base class with chess piece
 class Piece(Cell):
-    color = 0
-    backend = None
-    moves = None
-    countOfMoves = 0
-
     def __init__(self, x, y, color, backend):
-        super().__init__(x, y) # init cell
+        # init variables
+        self.moves = None
+        self.countOfMoves = 0
+
+        # init cell
+        super().__init__(x, y)
 
         # envalid self
         if not self.envalidPos():
@@ -125,31 +127,33 @@ class Piece(Cell):
             self.enPassant(backupPos)
 
             # check is movement available from point of view of the rules of checkmates
-            self.backend.generateBoard()
-            if self.backend.isCheck():
-                self.backend.addPiece(backupPiece)
-                self.move(backupPos[0], backupPos[1])
-                return False
+            self.backend.overrunBoard()
+            checkStatus = self.backend.isCheck()
 
-            # if dry run, roll back the board
-            if dryRun:
-                self.backend.restoreBoard()
+            # virtual movements mechanics
+            if checkStatus or dryRun:
+                # cancel last movement if it leads with check or dryRun enabled
+                if cell in self.moves['attacks']:
+                    self.backend.addPiece(backupPiece)
+                self.move(backupPos[0], backupPos[1])
+                self.backend.overrunBoard()
             else:
                 self.backend.currentMove *= -1
                 self.countOfMoves += 1
                 self.backend.previousActing = self
-            return True
+            return not checkStatus
         return False
 
     # for classic coords
-    def setCoords(self, coords):
+    def setCoords(self, coords, force=False):
+        moveFunc = self.move if force else self.changePos
         if type(coords) is str:
             pos = self.classicCoords(coords)
-            return self.changePos(pos[0], pos[1])
+            return moveFunc(pos[0], pos[1])
         elif type(coords) is list:
-            return self.changePos(coords[0], coords[1])
+            return moveFunc(coords[0], coords[1])
         elif hasattr(coords, '__class__') and issubclass(coords.__class__, Cell):
-            return self.changePos(coords.x, coords.y)
+            return moveFunc(coords.x, coords.y)
         raise ChessBackendException('Invalid action!')
 
     # create text-description for debug & API "rendering"

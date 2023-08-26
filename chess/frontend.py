@@ -1,14 +1,20 @@
 import pygame
+from tkinter import *
 
-from backend import Backend
+from backend import Backend, King
 from cells import GlobalVars, CellFrontObject
 from base_classes import Cell
+from ai import AI
 
 
 class Frontend:
-    def __init__(self, title="Chess"):
+    def __init__(self, title="Chess", playerColor=1):
         # init game backend
         self.backend = Backend()
+        self.backend.playerColor = playerColor
+
+        # init AI
+        self.ai = AI(self.backend)
 
         # init our instance of global vars
         self.globalVars = GlobalVars()
@@ -29,60 +35,94 @@ class Frontend:
         selectedPiece = None
 
         while self.running:
-            # keep loop running at the right speed
-            #self.clock.tick(self.globalVars.FPS)
+            skipHumanMove = False
 
-            # handle events
-            for event in pygame.event.get():
-                # handle closing window
-                if event.type == pygame.QUIT:
-                    self.running = False
+            # check for game end
+            if self.backend.gameState:
+                result = 'Game ended with '
+                if self.backend.gameState == 1:
+                    result += 'white victory'
+                elif self.backend.gameState == -1:
+                    result += 'black victory'
+                else:
+                    result += 'draw'
+                result += '! Press OK to exit game...'
 
-                # handle resizing window
-                if event.type == pygame.VIDEORESIZE:
-                    # update variables
-                    self.globalVars.WIDTH = event.w
-                    self.globalVars.HEIGHT = event.h
+                self.tkinterChoiceBox(prompt=result)
+                self.running = False
 
-                    # rescale sprites
-                    self.globalVars.scale_factor_x = self.globalVars.WIDTH / GlobalVars.WIDTH
-                    self.globalVars.scale_factor_y = self.globalVars.HEIGHT / GlobalVars.HEIGHT
-                    for test_cell in self.all_sprites:
-                        test_cell.setColorLoadSprite(test_cell.color)
+            # play with AI
+            if self.backend.currentMove != self.backend.playerColor:
+                skipHumanMove = self.ai.makeMove()
 
-                # handle mouse click
-                if event.type == pygame.MOUSEBUTTONUP:
-                    # get mouse position
-                    pos = pygame.mouse.get_pos()
+            # give move to second gamer on AI error
+            if not skipHumanMove:
+                # handle events
+                for event in pygame.event.get():
+                    # handle closing window
+                    if event.type == pygame.QUIT:
+                        self.running = False
+                        return
 
-                    # check for sprites to found which we clicked
-                    for sprite in self.all_sprites:
-                        if sprite.rect.collidepoint(pos):
-                            # determine backend piece object by click
-                            piece = sprite.CellBackendObject
+                    # handle resizing window
+                    if event.type == pygame.VIDEORESIZE:
+                        # update variables
+                        self.globalVars.WIDTH = event.w
+                        self.globalVars.HEIGHT = event.h
 
-                            if not selectedPiece:
-                                # piece should be selected
-                                if piece.color != self.backend.currentMove:
-                                    break  # not your turn yet
-                                selectedPiece = piece
+                        # rescale sprites
+                        self.globalVars.scale_factor_x = self.globalVars.WIDTH / GlobalVars.WIDTH
+                        self.globalVars.scale_factor_y = self.globalVars.HEIGHT / GlobalVars.HEIGHT
+                        for test_cell in self.all_sprites:
+                            test_cell.setColorLoadSprite(test_cell.color)
 
-                                # highlight piece we moving
-                                self.findCellFront(selectedPiece).setColorLoadSprite(self.globalVars.MOVABLE)
-                            else:
-                                if selectedPiece.color != self.backend.currentMove:
-                                    break  # not your turn yet
+                    # handle mouse click
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        # get mouse position
+                        pos = pygame.mouse.get_pos()
 
-                                # we should move selected piece
-                                self.backend.action(selectedPiece, piece)
+                        # check for sprites to found which we clicked
+                        for sprite in self.all_sprites:
+                            if sprite.rect.collidepoint(pos):
+                                # determine backend piece object by click
+                                piece = sprite.CellBackendObject
 
-                                # drop selected piece
-                                selectedPiece = None
+                                if not selectedPiece:
+                                    # piece should be selected
+                                    if piece.color != self.backend.currentMove:
+                                        break  # not your turn yet
+                                    selectedPiece = piece
 
-                                # redraw board after move
-                                self.renderBoard()
-                            # exit from finding sprite we clicked
-                            break
+                                    # highlight piece we moving
+                                    self.findCellFront(selectedPiece).setColorLoadSprite(self.globalVars.MOVABLE)
+                                else:
+                                    if selectedPiece.color != self.backend.currentMove:
+                                        break  # not your turn yet
+
+                                    # release of castling
+                                    if selectedPiece.__class__ == King and abs(selectedPiece.x - piece.x) == 2 and selectedPiece.countOfMoves == 0:
+                                        self.backend.releaseCastling(selectedPiece, piece)
+                                    else: # we should move selected piece
+                                        self.backend.action(selectedPiece, piece)
+
+                                    # drop selected piece
+                                    selectedPiece = None
+
+                                    # redraw board after move
+                                    self.renderBoard()
+                                # check we can transform pawn
+                                if self.backend.toTransform:
+                                    # ask user for piece to transform
+                                    piece = self.tkinterChoiceBox(choice=['Queen', 'Rook', 'Bishop', 'Knight'], prompt='Choose piece to transform pawn')
+
+                                    # transform pawn
+                                    self.backend.transformPawn(piece)
+
+                                    # redraw board after transform
+                                    self.renderBoard()
+
+                                # exit from finding sprite we clicked
+                                break
 
             # create background
             self.screen.fill(self.globalVars.BLUE)
@@ -93,6 +133,39 @@ class Frontend:
 
             # after drawing everything, flip the display (double buffering)
             pygame.display.flip()
+
+    @staticmethod
+    def tkinterChoiceBox(prompt, choice=[]):
+        # create prompt box
+        root = Tk()
+
+        # set font
+        root.option_add("*Font", "Arial 12")
+
+        # create label
+        label = Label(root, text=prompt)
+        label.grid(row=0, column=0)
+
+        if choice:
+            # create variable
+            var = StringVar(root)
+            var.set(choice[0])
+
+            # create option menu
+            option = OptionMenu(root, var, *choice)
+            option.configure(justify='left')
+            option.grid(row=1, column=0)
+
+        # create OK button
+        submit = Button(root, text='OK', command=root.destroy)
+        submit.configure(justify='center')
+        submit.grid(row=1, column=1)
+
+        # wait until user choose piece
+        root.mainloop()
+
+        # return user choice
+        return None if not choice else var.get()
 
     # add cell to the board using data from backend
     def addCell(self, x, y, color=None):

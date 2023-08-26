@@ -32,12 +32,13 @@ class GlobalVars:
 
 
 class CellSprite(pygame.sprite.Sprite):
-    origin_h = 0
-    origin_w = 0
-    color = None
-    image = None
-
     def __init__(self, globalVars, screen, name='Empty_empty', image='P_black.png', x=0, y=0, color=None):
+        # init variables
+        self.origin_h = 0
+        self.origin_w = 0
+        self.color = None
+        self.image = None
+
         # init sprite
         pygame.sprite.Sprite.__init__(self)
 
