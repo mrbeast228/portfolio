@@ -166,10 +166,13 @@ class Backend:
             self.toTransform = piece
 
         # check if game is ended
-        if self.isCheckmate():
-            self.gameState = -self.currentMove
-        elif self.isStalemate() or self.isOnlyKings():
-            self.gameState = 2
+        # TODO: now detect of checkmates/stalemates not working
+        #if self.isCheckmate():
+        #    self.gameState = -self.currentMove
+        #elif self.isStalemate() or self.isOnlyKings():
+        #    self.gameState = 2
+        if self.isOnlyKings():
+             self.gameState = 2
         return result
 
     # 2-dimensional list of moves
