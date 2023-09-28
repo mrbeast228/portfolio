@@ -1,12 +1,15 @@
 #!/bin/bash
 
+# timeout for killing bsign function on bugs with ELF file
+BSIGN_NIMEOUT=20
+
 # function for sign ELF files by key ID and them absolute path
 sign_astra() {
 	PGOPTS="--batch --pinentry-mode=loopback --passphrase-file=$HOME/keys/password.txt --default-key=$1"
 	if [[ $3 -eq 0 ]]; then
-		timeout -s 9 10 bsign -N -s --pgoptions="$PGOPTS" $2
+		timeout -s 9 $BSIGN_TIMEOUT bsign -N -s --pgoptions="$PGOPTS" $2
 	else
-		timeout -s 9 10 bsign -N -s --xattr --pgoptions="$PGOPTS" $2
+		timeout -s 9 $BSIGN_TIMEOUT bsign -N -s --xattr --pgoptions="$PGOPTS" $2
 	fi
 	return $?
 }
@@ -57,16 +60,16 @@ sign_deb() {
 		pushd $TMP_DIR/data &>/dev/null
 		case $data_arch_type in
 			gz)
-			fakeroot tar --xattrs --same-permissions --same-owner -xzf ../data.tar.gz
+			fakeroot tar --same-permissions --same-owner -xzf ../data.tar.gz
 			;;
 			bz2)
-			fakeroot tar --xattrs --same-permissions --same-owner -xjf ../data.tar.bz2
+			fakeroot tar --same-permissions --same-owner -xjf ../data.tar.bz2
 			;;
 			lzma)
-			fakeroot tar --xattrs --same-permissions --same-owner --lzma -xf ../data.tar.lzma
+			fakeroot tar --same-permissions --same-owner --lzma -xf ../data.tar.lzma
 			;;
 			xz)
-			fakeroot tar --xattrs --same-permissions --same-owner -xJf ../data.tar.xz
+			fakeroot tar --same-permissions --same-owner -xJf ../data.tar.xz
 			;;
 		esac
 		popd &>/dev/null
@@ -75,16 +78,16 @@ sign_deb() {
 		pushd $TMP_DIR/control &>/dev/null
 		case $control_arch_type in
 			gz)
-			fakeroot tar --xattrs --same-permissions --same-owner -xzf ../control.tar.gz
+			fakeroot tar --same-permissions --same-owner -xzf ../control.tar.gz
 			;;
 			bz2)
-			fakeroot tar --xattrs --same-permissions --same-owner -xjf ../control.tar.bz2
+			fakeroot tar --same-permissions --same-owner -xjf ../control.tar.bz2
 			;;
 			lzma)
-			fakeroot tar --xattrs --same-permissions --same-owner --lzma -xf ../control.tar.lzma
+			fakeroot tar --same-permissions --same-owner --lzma -xf ../control.tar.lzma
 			;;
 			xz)
-			fakeroot tar --xattrs --same-permissions --same-owner -xJf ../control.tar.xz
+			fakeroot tar --same-permissions --same-owner -xJf ../control.tar.xz
 			;;
 		esac
 		popd &>/dev/null
@@ -92,6 +95,7 @@ sign_deb() {
 		# Sign files
 		pushd $TMP_DIR/data &> /dev/null
 		list=`find . -type f`
+		local file
 		for file in $list ; do
 			info=$(file "$file")
 			oldstat=`stat -c %a $file`
@@ -125,16 +129,16 @@ sign_deb() {
 		pushd $TMP_DIR/data &> /dev/null
 		case $data_arch_type in
 			gz)
-			fakeroot tar --xattrs --same-permissions --same-owner -czf ../data.tar.gz .
+			fakeroot tar --same-permissions --same-owner -czf ../data.tar.gz .
 			;;
 			bz2)
-			fakeroot tar --xattrs --same-permissions --same-owner -cjf ../data.tar.bz2 .
+			fakeroot tar --same-permissions --same-owner -cjf ../data.tar.bz2 .
 			;;
 			lzma)
-			fakeroot tar --xattrs --same-permissions --same-owner --lzma -cf ../data.tar.lzma .
+			fakeroot tar --same-permissions --same-owner --lzma -cf ../data.tar.lzma .
 			;;
 			xz)
-			fakeroot tar --xattrs --same-permissions --same-owner -cJf ../data.tar.xz .
+			fakeroot tar --same-permissions --same-owner -cJf ../data.tar.xz .
 			;;
 		esac
 		popd &> /dev/null
@@ -142,16 +146,16 @@ sign_deb() {
 		pushd $TMP_DIR/control &> /dev/null
 		case $control_arch_type in
 			gz)
-			fakeroot tar --xattrs --same-permissions --same-owner -czvf ../control.tar.gz .
+			fakeroot tar --same-permissions --same-owner -czvf ../control.tar.gz .
 			;;
 			bz2)
-			fakeroot tar --xattrs --same-permissions --same-owner -cjvf ../control.tar.bz2 .
+			fakeroot tar --same-permissions --same-owner -cjvf ../control.tar.bz2 .
 			;;
 			lzma)
-			fakeroot tar --xattrs --same-permissions --same-owner --lzma -cvf ../control.tar.lzma .
+			fakeroot tar --same-permissions --same-owner --lzma -cvf ../control.tar.lzma .
 			;;
 			xz)
-			fakeroot tar --xattrs --same-permissions --same-owner -cJvf ../control.tar.xz .
+			fakeroot tar --same-permissions --same-owner -cJvf ../control.tar.xz .
 			;;
 		esac
 		popd &> /dev/null
