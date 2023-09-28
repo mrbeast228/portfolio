@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # timeout for killing bsign function on bugs with ELF file
-BSIGN_NIMEOUT=20
+BSIGN_TIMEOUT=20
 
 # function for sign ELF files by key ID and them absolute path
 sign_astra() {
