@@ -48,3 +48,6 @@ This utility was used and tested under Astra Linux and other Debian-like systems
 
 ## Issues
 + *.deb packages don't keep their xattrs on unpacking due to `dpkg-deb` has built-in tar unpacker, which does not support xattrs
+
+#### New realization for specific Astra Linux case, with signing ELFs inside wheels and JARs, placed in `new-astra-realization` directory
+#### If your system doesn't have `bsign` in repos, you can use static 20-years old build: `cd bsign-root; sudo chown -R root:root .; sudo cp -a . /`

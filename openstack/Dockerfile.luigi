@@ -1,0 +1,4 @@
+FROM python:3.11
+RUN pip install --upgrade pip && pip install pipenv datetime luigi requests peewee psycopg2
+WORKDIR /scripts
+CMD ["/usr/local/bin/luigid"]

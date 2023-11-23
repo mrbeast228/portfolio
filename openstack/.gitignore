@@ -1,0 +1,20 @@
+# .gitignore
+**/__pycache__/
+*.pyc
+*.pyo
+*.env
+.DS_Store
+MCS_Monitoring.iml
+profiles_settings.xml
+misc.xml
+modules.xml
+vcs.xml
+**/.idea
+db/migrations/.db_success
+states/*
+volumes/**
+!volumes/grafana-data/.keep
+vkmon.ini
+/vkmon.ini
+vm_state_api/config.ini
+vm_state_api/groups.yml
