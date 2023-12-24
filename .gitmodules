@@ -7,3 +7,12 @@
 [submodule "educational/sudoku-solver"]
 	path = educational/sudoku-solver
 	url = https://github.com/spbupos/sudoku-solver.git
+[submodule "educational/kotlin-snake"]
+	path = educational/kotlin-snake
+	url = https://github.com/spbupos/kotlin-snake.git
+[submodule "educational/itmo-se-cpp-lab4-argparser"]
+	path = educational/itmo-se-cpp-lab4-argparser
+	url = https://github.com/spbupos/itmo-se-cpp-lab4-argparser.git
+[submodule "educational/itmo-se-cpp-lab5-17bitarray"]
+	path = educational/itmo-se-cpp-lab5-17bitarray
+	url = https://github.com/spbupos/itmo-se-cpp-lab5-17bitarray.git
